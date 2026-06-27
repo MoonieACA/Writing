@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anomalous Control Authority — Lady Moonlight</title>
+<style>
+  :root{
+    --bg:#0e0f11;
+    --panel:#15171a;
+    --panel2:#1b1e22;
+    --ink:#cdd0d4;
+    --ink-dim:#8b9096;
+    --rule:#2a2e33;
+    --rule-strong:#3a3f46;
+    --accent:#b9c2cc;        /* cold moon-grey */
+    --warn:#c8553d;          /* redaction / breach red */
+    --link:#8fa6c4;
+    --mono:"Courier New",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 50% -200px, #16191d 0%, var(--bg) 70%),
+      var(--bg);
+    color:var(--ink);
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:18px;
+    line-height:1.68;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px 140px;}
+
+  /* masthead */
+  header.masthead{
+    border-bottom:1px solid var(--rule-strong);
+    margin:0 0 14px;
+    padding:34px 0 18px;
+  }
+  .crest{
+    display:flex;align-items:center;gap:14px;
+  }
+  .crest .moon{
+    width:40px;height:40px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:34px;line-height:1;color:var(--accent);
+    font-style:normal;
+    flex:0 0 auto;
+  }
+  .crest .org{
+    font-family:var(--mono);
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-dim);
+    line-height:1.5;
+  }
+  .crest .org b{color:var(--accent);font-weight:700;}
+  .doctitle{
+    margin:16px 0 4px;
+    font-size:34px;line-height:1.1;letter-spacing:.01em;color:#e8ebee;font-weight:700;
+  }
+  .docsub{
+    font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .clearance{
+    margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;
+  }
+  .tag{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    border:1px solid var(--rule-strong);border-radius:2px;padding:4px 9px;color:var(--ink-dim);
+    background:var(--panel);
+  }
+  .tag.warn{color:var(--warn);border-color:#52271f;}
+
+  /* item navigation */
+  nav.toc{
+    border:1px solid var(--rule);background:var(--panel);
+    padding:14px 18px;margin:22px 0 40px;border-radius:3px;
+  }
+  nav.toc .lbl{
+    font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-dim);margin-bottom:8px;
+  }
+  nav.toc ol{margin:0;padding:0;list-style:none;counter-reset:t;}
+  nav.toc li{counter-increment:t;margin:3px 0;}
+  nav.toc li::before{
+    content:counter(t,decimal-leading-zero);
+    font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin-right:12px;
+  }
+  nav.toc a{color:var(--link);text-decoration:none;font-size:16px;}
+  nav.toc a:hover{text-decoration:underline;color:#b6c6dc;}
+
+  /* section heads for each work */
+  .work{margin:0 0 10px;padding-top:30px;}
+  .work-head{
+    border-top:1px solid var(--rule-strong);
+    padding-top:26px;margin-top:46px;margin-bottom:22px;
+  }
+  .work-head:first-of-type{border-top:none;margin-top:0;padding-top:6px;}
+  .work-kicker{
+    font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);
+  }
+  .work-title{
+    font-size:25px;color:#e6e9ec;margin:6px 0 0;font-weight:700;letter-spacing:.01em;
+  }
+
+  p{margin:0 0 18px;}
+  .prose p:first-letter{}
+
+  /* divider ///// */
+  .slash{
+    text-align:center;color:var(--ink-dim);font-family:var(--mono);
+    letter-spacing:.5em;font-size:14px;margin:30px 0;user-select:none;
+  }
+
+  /* poem fragment lines */
+  .moon{
+    text-align:center;font-style:italic;color:var(--accent);
+    margin:24px 0;line-height:1.5;
+  }
+  .moon .glyph{color:var(--ink-dim);font-style:normal;font-weight:700;padding:0 .5em;}
+  /* the closing poem in claire de lune (full block) */
+  .verse{
+    text-align:center;font-style:italic;color:var(--accent);
+    margin:26px 0;line-height:1.8;
+  }
+  /* multiline moon block (gore stanza, benediction) */
+  .moonblock{
+    text-align:center;font-style:italic;color:var(--accent);
+    margin:26px 0;line-height:1.8;
+  }
+  .moonblock .glyph{color:var(--ink-dim);font-style:normal;font-weight:700;}
+
+  /* the pager */
+  .pager{font-weight:700;letter-spacing:.04em;color:#dfe2e5;}
+
+  /* dossier blocks */
+  .file{
+    border:1px solid var(--rule-strong);
+    background:var(--panel);
+    border-radius:3px;
+    padding:26px 26px 8px;
+    margin:8px 0 6px;
+    position:relative;
+  }
+  .file::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--rule-strong);
+  }
+  .file h2.file-title{
+    font-size:20px;color:#e8ebee;margin:0 0 2px;letter-spacing:.02em;
+  }
+  .file .file-org{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-dim);margin-bottom:18px;
+  }
+  .file .meta{margin:0 0 16px;}
+  .file .meta .row{
+    display:flex;gap:10px;font-size:15px;line-height:1.5;padding:2px 0;
+    border-bottom:1px dotted var(--rule);
+  }
+  .file .meta .row .k{
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-dim);flex:0 0 210px;padding-top:3px;
+  }
+  .file .meta .row .v{color:var(--ink);}
+  .file h3{
+    font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--rule);
+  }
+  .file p{font-size:15.5px;line-height:1.62;color:var(--ink);margin:0 0 13px;}
+  .file ul{margin:0 0 14px;padding-left:0;list-style:none;}
+  .file li{
+    font-size:15px;line-height:1.55;padding:3px 0 3px 18px;position:relative;color:var(--ink);
+  }
+  .file li::before{content:"–";position:absolute;left:0;color:var(--ink-dim);}
+  .file .note-label{font-weight:700;color:var(--accent);}
+  .file .interview .q{margin:0 0 9px;font-size:15px;}
+  .file .interview .a{font-style:italic;color:var(--ink);}
+  .redact{
+    background:#000;color:#000;padding:0 .35em;border-radius:1px;
+    box-shadow:inset 0 0 0 1px #2a2e33;user-select:none;
+  }
+  .strike{text-decoration:line-through;color:var(--ink-dim);}
+  .bold{font-weight:700;color:#dfe2e5;}
+
+  /* addendum (river) */
+  .addendum{
+    border:1px solid #52271f;border-left-width:3px;
+    background:linear-gradient(0deg,#161213,#15171a);
+    padding:22px 24px 6px;margin:30px 0 0;border-radius:3px;
+  }
+  .addendum .ad-title{
+    font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--warn);margin:0 0 2px;font-weight:700;
+  }
+  .addendum .ad-sub{
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-dim);
+    font-style:normal;margin-bottom:16px;
+  }
+  .addendum p{font-size:15.5px;line-height:1.6;}
+  .addendum .reclass{font-weight:700;color:#dfe2e5;}
+
+  footer.foot{
+    margin-top:70px;border-top:1px solid var(--rule);padding-top:18px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-dim);text-align:center;line-height:1.8;
+  }
+
+  ::selection{background:#33414f;color:#eef2f6;}
+
+  @media (max-width:560px){
+    body{font-size:17px;}
+    .doctitle{font-size:27px;}
+    .file .meta .row{flex-direction:column;gap:0;}
+    .file .meta .row .k{flex-basis:auto;}
+    .moon{font-size:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="crest">
+      <div class="moon" aria-hidden="true">☾</div>
+      <div class="org">
+        <b>Anomalous Control Authority</b><br>
+        Selenic Containment Branch — Collected Record
+      </div>
+    </div>
+    <div class="docsub">Field accounts &amp; containment files · SA-001 cluster</div>
+    <div class="clearance">
+      <span class="tag">Clearance · Level 3</span>
+      <span class="tag">Branch · Selenic</span>
+      <span class="tag warn">Contains SA-001 material</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <div class="lbl">Record contents</div>
+    <ol>
+      <li><a href="#claire">Record 1</a></li>
+      <li><a href="#moonlighter">Record 2</a></li>
+      <li><a href="#drone">Record 3</a></li>
+      <li><a href="#ameeba">Record 4</a></li>
+      <li><a href="#river">Record 5</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. CLAIRE DE LUNE -->
+  <section class="work prose" id="claire">
+    <div class="work-head">
+      <h2 class="work-title">Record 1</h2>
+    </div>
+
+    <p>It's calm out. The morning sun comes through a big pane window in a long clean slab. It lays pale white across the counter and a chalkboard menu. A little tip jar gleams the same color. Dust turns slow in the light, sparse, just enough to play a bit in the air. Somewhere far off an espresso machine hisses and settles. It's warming up for the day. Someone far off, kinda cute if you look at them, wipes down a steam wand. There's something low and tinny on a radio that pulls a little at the urge to dance. But it's too quiet a place for that.</p>
+
+    <p>He's in the seat by the window, with the pale light casting his black hair a shade brighter as best it can. His pose is a long negotiation that ends with one leg hooked over another, sitting solid, pretending it's not expecting the next pager beep poorly, with the way it bounces with his foot tapping. His tail finds somewhere else to be. It gives a slow swish then settles, crescent at its end easy on his knee. Outside the glass the first of the festival lanterns sway on their lines, not lit yet. That's for the event later on. Moon's supposed to be waxing soon. A week or so till full. The lanterns sway. Only word spoken of the wind. A whisper. Pretty, really, paper in reds and golds strung along the length of the street. A vendor down the way is still hanging them, up on a little stepladder, taking his time. There's a girl setting out folding chairs. He turns the cup a quarter-turn. The coffee's gone down to warm.</p>
+
+    <p>The song on the radio ends and there's that half-second of dead air before the next one, static hanging around in the room but not talking. Staring. And in it the espresso machine ticks once, cooling, and the cute one behind the counter sets down a cup somewhere with a thak. Then the next song comes up, low and a little slower than the last. It's the kind that reminds someone of home. He looks out into the pale blue of the morning sky, head back against the glass, the cool of it on his scalp, the radio doing its slow work. The vendor moves his ladder three feet down the line and climbs back up. The girl with the folding chairs has a whole stack to go and isn't hurrying. Plenty of pale morning light. The slab of it creeps along the counter. Outside its shining on the still lanterns, hanging with no light on their ties. There's a corkboard by the door. Flyers are layered three or so deep. A guitar teacher, a band playing somewhere, last March, a missing cat. March has long since come and gone. The atmosphere. It's slow. Rolling in the way moonlight does. You don't see it before it already has its hands over every inch of ground, gripping gentle on the land, never enough to bruise. White fingers, radiant white, and too many, finding the places a body hides away. The hinge of a jaw, tight, the back of the neck under the warm of a head of hair. Pulling, grasping, holding in place so the fibers in the scalp twinge in discomfort and go taut. They feel the pulse and tilt the head back, to bare the line of the throat to another hand of pale light. Sinking deeper. The quiet command to let more take hold intensifies. Pressure in the windpipe coming in degree by degree under the inevitability of delicate fingers. There's no hurry on this pale lit morning. There's plenty of it to go. It tips the chin up, nails digging under and over in its possessive hold. To bask in the comfort. The weight of this dreary day has been held so long and it's only the morning. It would be better to put it down. And ease the discomfort. It would be better to be held in the light of the moon.</p>
+
+    <div class="verse">
+      The moon lets down its ladder on the stream,<br>
+      the world goes quiet as the inside of a dream,<br>
+      and nothing is as heavy as it seemed.<br>
+      So lay your head where all the soft things gleam.<br>
+      The tide draws back. The sleeping stones are bare.<br>
+      There's silver in the water, silver in the air,<br>
+      and something kind and patient waiting there<br>
+      to take the weight you weren't built to bear.<br>
+      The lanterns dim. The current finds your feet.<br>
+      It pulls so slow it almost feels like sleep,<br>
+      like being warm again, and held, and sweet,<br>
+      in arms that ask for no promise you can't keep.<br>
+      So set it down. There's nowhere left to go.<br>
+      The light comes gentle and it comes in low.<br>
+      Lay back. Let the long water take you slow.<br>
+      There's rest beneath the moon. You'll come to know.<br>
+      And if you wake, you'll wake to find it true.<br>
+      That all that pretty light was made just for you.
+    </div>
+
+    <p>So —</p>
+    <p class="pager">BREEP. BREEP. BREEP-BZZT.</p>
+    <p>The pager. Cheap and electric and ugly. It's super thick from all the electromagnetic shielding they had to put in it. His hand comes up slow to his throat, fingers spreading careful over it. The pressure is gone but the ache is still there. He swallows. The pager keeps beeping, the amber light on it yelling for attention. But his eyes climb to the window, up past the wind-waving lanterns. Up in the sky is the morning sun, and a cloud that rolls along too slow. And barely visible is a blue-washed outline of a white gibbous. Lingering, as the pager still beeps.</p>
+  </section>
+
+  <div class="slash">/////</div>
+
+  <!-- 2. MOONLIGHTER DOSSIER -->
+  <section class="work" id="moonlighter">
+    <div class="work-head">
+      <h2 class="work-title">Record 2</h2>
+    </div>
+    <div class="file">
+      <h2 class="file-title">MOONLIGHTER — Entity Agent 009</h2>
+      <div class="file-org">Anomalous Control Authority · Containment File</div>
+
+      <div class="meta">
+        <div class="row"><div class="k">Field Designation</div><div class="v">Moonlighter</div></div>
+        <div class="row"><div class="k">Entity Classification</div><div class="v">SA-7A (Moonlin)</div></div>
+        <div class="row"><div class="k">Operating Designation</div><div class="v">EA-009 (Entity Agent)</div></div>
+        <div class="row"><div class="k">Clearance to Access</div><div class="v">Level 3</div></div>
+        <div class="row"><div class="k">Containment Branch</div><div class="v">Selenic Anomalies</div></div>
+        <div class="row"><div class="k">Disposition</div><div class="v">Active / Cooperative / On-Site</div></div>
+      </div>
+
+      <h3>Designation Notes</h3>
+      <p>Specimen is a Moonlin — a humanoid selenic entity that ordinarily operates under the direct command of the lunar intelligence catalogued as SA-001 <span class="redact">redacted</span>. Moonlin function as extensions of her will and do not, under normal conditions, exhibit independent cognition.</p>
+      <p>EA-009 is an apostate, catalogued selenic anomaly SA-7A. The subject retains full selenic attunement and continues to receive the directive of SA-001, but currently appears to operate under its own autonomy. Observation over time has led to the determination that this is not a malfunction but a sustained act of will. The subject was reclassified from contained anomaly to operating asset (EA-009) on this basis.</p>
+      <p>EA-009 operates as an investigator and first responder for events and subjects deemed under the authority of the Selenic Containment Branch. Agent 009 is to be monitored closely and cautiously in accordance with guidelines established in this document and all supporting documents related to anomalous entity SA-001 <span class="redact">redacted</span>. Agent 009 is fit for service, with a risk assessment and deployment authorization necessary for any operations conducted within 48 hours before and after the full phase of the moon. During this window the agent's attunement to SA-001 intensifies, and his continued autonomy cannot be guaranteed. EA-009 has demonstrated reliable conduct and is cleared for standard deployment under escort, or monitored deployment when operating unaccompanied.</p>
+
+      <h3>Description</h3>
+      <p>Physical specifications are variable due to the subject's minor shapeshifting abilities, but generally take on consistent characteristics in what is deemed its two "default forms"</p>
+      <ul>
+        <li>Height: approx. 7'4" (Moonlin) / 5'11" (Human)</li>
+        <li>Apparent Age: mid twenties (Human)</li>
+        <li>Dermis: pale, cool-toned, faintly luminescent</li>
+        <li>Cranial: elongated pointed aural structures</li>
+        <li>Ocular: two opposed luminous crescents; no visible sclera or pupil. Emission intensifies with <span class="redact">correlation under study</span></li>
+        <li>Oral: normally a solid, seamless feature; lower face capable of splitting to reveal full dentition. Fangs prominent.</li>
+        <li>Mane: dark, dense, semi-mobile in absence of air current. Cause undetermined.</li>
+        <li>Posterior: semi-reptilian caudal structure terminating in a crescent formation.</li>
+      </ul>
+
+      <h3>Containment Procedures</h3>
+      <p>EA-009 is held in Residential Containment Unit 4 (climate-neutral). Subject is cooperative and ambulatory under escort. Standard restraints unnecessary; subject has not attempted egress.</p>
+      <ul>
+        <li>Direct flash photography prohibited.</li>
+        <li>Personnel are not to discuss SA-001 in the subject's presence outside sanctioned interview.</li>
+        <li>During full lunar phase, attunement spikes; observation staffing is doubled. Subject is not to be deployed within 48 hours before or after full phase without risk assessment and deployment authorization.</li>
+        <li>Personnel reporting "a feeling of being watched from above" near the unit are to report to medical and rotate off-duty.</li>
+        <li>Subject has developed a marked preference for coffee and is permitted regular provision. Disposition improves noticeably when supply is maintained. Staff have, without prompting, begun bringing it unbidden.</li>
+      </ul>
+
+      <h3>Capabilities</h3>
+      <ul>
+        <li>Electromagnetic interference: Disrupts nearby electronic and electromagnetic systems, passively and at will. Lighting, instrumentation, and recording equipment affected in proximity.</li>
+        <li>Radio communication: Projects and receives through radio-band transmission, manifesting as voice over active equipment. Has spoken through facility comms without authorization on <span class="redact">redacted</span> occasions.</li>
+        <li>Short-range translocation: Displaces itself instantaneously across short distances. Range limited; no sustained transit observed. Silent; leaves brief electromagnetic disturbance at origin and arrival.</li>
+        <li>Selenic emission — "moonbeam": Discharges a directed beam of luminous energy. Offensive potential confirmed; full output untested under controlled conditions.</li>
+      </ul>
+      <p>Because the subject remains fully attuned to the selenic command network while refusing its directive, EA-009 can detect, locate, and identify other Moonlin and a range of adjacent anomalous entities prior to conventional instrument confirmation. The specimen is, functionally, a living tracking device, and is deployed under escort for tracking and identification operations.</p>
+      <p><span class="note-label">Containment Note:</span> The translocation signature is the only reliable warning of subject movement; EM sensors at the unit are maintained for this purpose. Recorded observation cannot be considered secure — interference and unauthorized comms access mean no proximate log is presumed tamper-free. Portions of this file may have been read by its subject.</p>
+
+      <h3>Risk Assessment</h3>
+      <ul>
+        <li>Physical threat (unprovoked): Moderate</li>
+        <li>Egress risk: Low</li>
+        <li>Electromagnetic / comms compromise: Moderate</li>
+        <li>Anomalous capability deployment: High</li>
+        <li>Intelligence compromise: High</li>
+        <li>Reclamation by SA-001: Unresolved</li>
+      </ul>
+      <p>The subject is a threat, but the threat is principally one of uncertainty. Two questions remain unresolved and may not be resolvable by observation alone.</p>
+      <p>First — whether the apostasy is genuine. A subject that refused SA-001 and one that merely performs refusal, in order to embed within the facility and act on her behalf, would be, to all available instrumentation, indistinguishable.</p>
+      <p>Second — whether genuine refusal is permanent. The claim of SA-001 on a Moonlin is not understood to expire. No basis exists to estimate how long the subject can hold a door shut against the thing on the other side of it, or whether that decision remains the subject's to make.</p>
+      <p>Continued utility is judged to outweigh the risk. This judgment is reviewed quarterly and has not changed.</p>
+
+      <h3>SA-001 — <span class="redact">redacted</span></h3>
+      <p>SA-001 is the first catalogued selenic anomaly and the origin of the classification. Authority designation <span class="redact">redacted</span>. All Moonlin, including EA-009, are bound to it from creation.</p>
+      <ul>
+        <li>Designation: <span class="redact">redacted</span> (SA-001)</li>
+        <li>Linkage: Lumen Noumenal</li>
+        <li>Documented Effect: Lunar Languor</li>
+        <li>Observability: Noumenal; inferred only by effect</li>
+      </ul>
+      <p>The linkage between SA-001 and the bound, designated Lumen Noumenal, cannot be detected, located, or severed by any available instrument. Its existence is inferred solely from subject behavior. SA-001 itself has never been directly observed; the Authority records only its effects.</p>
+      <p>Chief among these is Lunar Languor: a documented state of heavy, euphoric compliance reported by linked subjects and, in lesser degree, by personnel in proximity to active linkage. Subjects describe it not as compulsion but as solace, relief, or other generally positive affectations. The reports of subjects, or of individuals suspected to be under the effects of SA-001's influence, are not under any circumstances to be considered accurate. EA-009 refers to SA-001 as "Lady Moonlight" and has not elaborated on record.</p>
+      <p>Incident records (partial):</p>
+      <ul>
+        <li><span class="redact">redacted</span>, age <span class="redact">██</span>, recovered <span class="redact">redacted</span> — both arms removed at the shoulder. <span class="redact">redacted</span>. Subject reported feeling "cared for."</li>
+        <li><span class="redact">redacted</span> — <span class="redact">██</span> personnel. No signs of struggle, no external entry. <span class="redact">redacted</span> found <span class="redact">redacted</span>, arranged.</li>
+        <li><span class="redact">redacted</span> walked <span class="redact">redacted</span> during full phase and did not <span class="redact">redacted</span>. Remains <span class="redact">redacted</span>. Smiling.</li>
+      </ul>
+      <p><span class="note-label">Cross-Reference:</span> Information on this entry has been intentionally truncated. Full incident records attributed to SA-001 are maintained in the separate primary document (Clearance 4).</p>
+
+      <h3>Interview Excerpt (Addendum C)</h3>
+      <div class="interview">
+        <p class="q">Q. Do you want to go back? — <span class="a">"People keep asking me that like she's a town."</span></p>
+        <p class="q">Q. I'm asking like she's a persistent threat. — <span class="a">"Oh, she is persistent. I'll give her that."</span></p>
+        <p class="q">Q. And what makes you able to say no? We've not encountered any other Moonlin who can. — <span class="a">"There are some out there. Me? I'm just stubborn."</span></p>
+        <p class="q">Q. Stubborn. And how often does she attempt to communicate with you? To subjugate you again? — <span class="a">"Every night. Polite, too. That's the part that gets you — she never raises her voice. Just waits. She's got the time."</span></p>
+        <p class="q">Q. And you just say no? — <span class="a">"I drink coffee and I don't answer. It's like a bad marriage."</span></p>
+        <p class="q">Q. And why do you choose to stay here? — <span class="a">[Entity Agent 009 raises his cup and does not elaborate further.]</span></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="slash">/////</div>
+
+  <!-- 3. DRONE STORY -->
+  <section class="work prose" id="drone">
+    <div class="work-head">
+      <h2 class="work-title">Record 3</h2>
+    </div>
+
+    <p>The van rolls easy down the access road, no rush, heat shimmering off the asphalt and the AC losing a quiet war against the noon sun. Julie has one wrist draped over the wheel, ponytail spilling down the seatback, the other hand fishing a sour candy out of a bag in the cupholder without looking. "If this gun thing actually works, mmm," she says around it, "I'm chilling tonight and nobody's allowed to call me. That's the deal, alright."</p>
+    <p>"Yeah, like they'd listen if we asked," Denny says from the back, headset crooked on one ear. He has a photo wedged into the console light, his fiancée mid-laugh, and he keeps glancing at it between readings. "Claire says good luck, by the way. God, she's perfect."</p>
+    <p>"You've said that four times since the gate," Cass murmurs from the passenger seat, not opening his eyes. He has the gun across his lap, a ring of dark housing with a hollow circle in the center, one clawed finger tapping slow on the rim. "I'm starting to think you're trying to convince yourself."</p>
+    <p>"I'm not. She's—" Denny stops. "Okay, that's fair, but she is."</p>
+    <p>Cass huffs something close to a laugh and finally cracks one eye, the pale of it gleaming into the dim cabin shade. "Relax. She sounds great. Anybody who'd marry you has gotta be a good person." He rolls his neck. In the background, "Hey, what does that mean..." Then Cass again, "Six miles. Then I get to find out if this thing's just a fancy flashlight."</p>
+    <p>"Telemetry's green, skies are clear, site's just past the—" Denny's screen blooms red. The cabin lights with it, and a flat ACA tone climbs over the road noise, that specific pitch they all know. BREACH EVENT stamps itself across his display. "...Huh. Or. The test came to us." Exhausted and a bit gritty, like she has gummies in her mouth, Julie squints up through the windshield. "...That's a rogue tranq drone. One of ours. Great. Love when our own stuff goes feral." A beat, then drier still, "I'm betting flashlight."</p>
+    <p>Julie hasn't even stopped before it breaks skyward. A drone, ACA plating gone matte, a fat dart-rig slung under its belly. Denny goes pale at his screen. "That's a heavy-suppression unit. Cass — those things are rated to tranq down A-TA-73. Seventy-three. If it tags you you're not waking up for a week."</p>
+    <p>"Cool. Love that." The shadow in the sky banks low and lines up on the van. "Okay! We're doing this!" Julie floors it onto open road, suspension shrieking.</p>
+    <p>"Get me close, Julie!" The seat goes empty. A blink, a cold pull of air, and Cass is on the roof, boots planted, wind tearing at him. The drone wheels and its underside splits open, a dart-rack rotating up.</p>
+    <p>The first volley skitters off the steel by his boots. He drops flat as Julie swerves. He poofs back into the cabin next to her. "Warn me when you do that!" — "Get back up there, idiot! It's shooting at us!" He deadpans and turns to black mist — the drone jukes, Cass appearing back on the hull of the van. The next dart punches deep into his shoulder and sticks, pumping through the skin. He tears it out, gritting, pale light beading at the hole. His hand comes up to his headset, one eye wincing. "Denny, it hit me. How much time I got left!?" he grits, already feeling it, cold sludge down his arm, the moon-pull in his chest stuttering. Denny's voice cracks over the wind: "That's a 4000-pound dose in a buck-eighty body, that's — that's really bad, Moonman! Get it done now!"</p>
+    <p>The other arm has already gone dead, hanging limp at his side. Cass sways on the hull, the horizon tilting like the whole sky has come loose. More darts ping off the steel around him, and he barely registers them. He brings the gun up anyway, the prism trunk of it angled toward the dull plates of the drone.</p>
+    <p>The aperture lights, the nested rings begin to turn, two, then three, counter-rotating, dragging the noon glare into themselves and bleeding it back out cold. Pale light pools in the hollow center, the pull of it wrenching him so hard the tranq fog isn't so bad. "...There it is," he breathes.</p>
+    <p>The moonbeam tears loose — a ribbon, a flat wafer of silver fire wide as his hand and thin as a blade, searing a line across the bright daytime sky, the air along its edge shivering like heat haze run backwards. It crosses the distance instantly. Where it meets the drone, it shears, dragging through matte plating like the metal had only ever been a suggestion. The dart-rig peels away in a screaming arc. Stabilizers spin off glinting. The beam carves the frame near in half and the two pieces simply part, light pouring out of the seam, before the scrap drops and craters a hundred yards out in a long tumbling scrape of smoke and severed glow.</p>
+    <p>The recoil and the dose hit together. The gun's rings spin down, the silver guttering out, and Cass folds. He appears face down on the floor in the van cabin, groaning. Both Julie and Denny huddle to him in an excited hurry. "Moonman!" They give each other an evil smile. "We get to go home today!" Then Julie, "Moonman? You alright, dude? Moonman..."</p>
+  </section>
+
+  <div class="slash">/////</div>
+
+  <!-- 4. AMEEBA DOSSIER -->
+  <section class="work" id="ameeba">
+    <div class="work-head">
+      <h2 class="work-title">Record 4</h2>
+    </div>
+    <div class="file">
+      <h2 class="file-title">AMEEBA — Unclassified Entity</h2>
+      <div class="file-org">Anomalous Control Authority · Containment File</div>
+
+      <div class="meta">
+        <div class="row"><div class="k">Field Designation</div><div class="v">AMOEBA</div></div>
+        <div class="row"><div class="k">Informal Designation</div><div class="v">"AMEEBA" (staff; see Filing Note)</div></div>
+        <div class="row"><div class="k">Entity Classification</div><div class="v">Unclassified — taxonomy pending</div></div>
+        <div class="row"><div class="k">Clearance to Access</div><div class="v">Level 2</div></div>
+        <div class="row"><div class="k">Containment Branch</div><div class="v">Unassigned / General Anomalies</div></div>
+        <div class="row"><div class="k">Disposition</div><div class="v">At large / Non-hostile / Unrecovered</div></div>
+      </div>
+
+      <h3>Filing Note</h3>
+      <p>The official designation is AMOEBA, assigned at intake for the subject's gelatinous, form-unstable morphology. Field and observation staff have without exception adopted the spelling "AMEEBA," which now appears across nearly all working notes and recovered transcripts. A directive reminding personnel of the correct spelling was issued and is, per the submitting clerk, the only document in the active file still using it.</p>
+
+      <h3>Designation Notes</h3>
+      <p>Subject is an unclassified anomalous entity, first logged after a series of property-disturbance and unexplained-consumption reports in the river district. No taxonomy has been established; the entity is a shapeshifter and does not hold a stable form long enough for conventional classification to complete. It exhibits no observed hostility. Threat to the city is assessed on property damage, consumption, and the difficulty of tracking. Recovery has not been achieved. The entity does not appear to be evading the Authority so much as it's unconcerned with it.</p>
+
+      <h3>Description</h3>
+      <p>Physical specifications are unreliable. The subject is a shapeshifter and adopts a wide range of forms. Its default — the form it holds when unobserved or at rest — is a small grey, semi-translucent cat. Observations below describe tendencies across sightings.</p>
+      <ul>
+        <li>Mass: variable; increases following feeding events.</li>
+        <li>Composition: semi-translucent, gelatinous. Holds shape under its own cohesion; "pours" and re-forms at will.</li>
+        <li>Luminescence: faint emission at extremities under low light. Cause undetermined. Present across all forms.</li>
+        <li>Acoustic signature: a low, motorless hum when content. Field staff compare it to "a refrigerator running in another room."</li>
+        <li>Affect: reads as affectionate. Approaches warm surfaces and, on two logged occasions, personnel. Has harmed neither.</li>
+      </ul>
+
+      <h3>Containment Procedures</h3>
+      <p>No containment unit currently holds the subject. The following are recovery-and-handling directives for field encounters.</p>
+      <ul>
+        <li>Do not corner the subject. Cornered, it changes form and relocates; it does not fight.</li>
+        <li>Subject is to be recovered, not neutralized. Standing order: the entity has caused no injury and is not to be treated as hostile absent new evidence.</li>
+        <li>Consumption hazard: subject feeds opportunistically and indiscriminately. Secure loose materials, foodstuffs, and small unattended equipment in its vicinity. Two field recorders are unaccounted for and presumed consumed.</li>
+        <li>Subject is attracted to warmth. Heated surfaces, idling vehicle hoods, and active equipment draw it. This is the most reliable means of predicting its position.</li>
+        </ul>
+
+      <h3>Capabilities</h3>
+      <ul>
+        <li>Shapeshifting: full-body morphological change, rapid and effortless. No upper limit on form variation has been established. This is the primary obstacle to classification.</li>
+        <li>Consumption: voracious and broad. Ingests organic and inorganic material alike and gains mass from doing so. No upper bound on appetite observed. The behavior reads as feeding, not aggression.</li>
+        <li>Translocation by form: crosses ground by reshaping — flattening, pouring, re-forming — rather than by teleportation. Difficult to follow; not instantaneous.</li>
+        <li>Cohesion: maintains integrity across radical shape change and can re-form after being dispersed. No method of permanent dispersal is known. The Authority has not attempted one.</li>
+      </ul>
+      
+      <h3>Risk Assessment</h3>
+      <ul>
+        <li>Physical threat (unprovoked): <span class="bold">Negligible</span></li>
+        <li>Egress / evasion risk: <span class="bold">High</span> (no fixed form; cannot be reliably held or tracked)</li>
+        <li>Property / consumption hazard: <span class="bold">Moderate</span></li>
+        <li>Civilian exposure risk: <span class="bold">Moderate</span> (visibility, not violence)</li>
+        <li>Classification confidence: <span class="bold">Low</span></li>
+      </ul>
+      <p>The subject is a problem the Authority does not have a shape for. It is not dangerous in any manner the threat framework was built to measure — it has hurt no one, threatened no one, and fled nothing. It eats, it changes, it seeks warmth, and it cannot be caught. The file remains open because the Authority does not know what the subject is, and the absence of a hostile act is not, by current procedure, the same as the absence of a threat.</p>
+      <p>One reviewer has appended a single line to the assessment, unsanctioned, and it has not been struck: <em>"We are not chasing this thing because it is dangerous. We are chasing it because we cannot name it, and that is our failing, not its."</em></p>
+    </div>
+  </section>
+
+  <div class="slash">/////</div>
+
+  <!-- 5. RIVER SCENE -->
+  <section class="work prose" id="river">
+    <div class="work-head">
+      <h2 class="work-title">Record 5</h2>
+    </div>
+
+    <p>Ruggachugchug. That's the sound the van makes when it's tired of eating road for dinner. About evening time now, so it had its fill. Rolling south through the river district, the edge of those tinted windows must be so hard on the frames it's cutting the pads on the metal. Black paint is drinking up the sun tasty, and touching the outside would be sure to give your hand a jump. Scratched up some, but the sun still makes a pretty shine on the clearcoat. Official. Cute roller was sure to turn a couple of heads, with it trying to do just the opposite. There weren't any markings, not ACA related anyway. They were for all intents and purposes a bunch of cell phone providers.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>The time is down. The time is now<span class="glyph"><b>|</b></span></div>
+
+    <p>Denny has his finger to the glass of a screen inside, close enough he can feel it fuzzy. "Hey! hey Moonman! You gonna mess up all my equipment again this time? How thick they have to shield this stuff to keep you from busting it up anyway?" The CRT is casting him green in the dim of the cabin. His hair is greasy from that inside the van air, loose and medium long. The wisps of brown blonde throw over one another to make it a bit fluffy. It's a little flat on one side from the headset squeezing into his temple. Sleeves shoved up, collar open just enough for the sweat where his neck meets his chest to shed flecks of green light. He's unkempt proper, pretty tall, but like he grew first and his body is still figuring out what to do with it.</p>
+    <p>"Moonman!"</p>
+    <p>The lights on the rack dip, briefly, like a shrug.</p>
+    <p>"Yeah, real funny." Denny yanks his finger back from the screen and shakes it out like the static bit him. 'Moonman' finally responds, "They don't make it thick enough alright?" Cass brings a finger up to his forehead, the dark claw point tucking into his forehead. "Where was this thing supposed to be again? We've been rolling around river district for hours!" His voice has the feel of a dark room, but running around downtown has it so it sounds like someone lit a firecracker in there.</p>
+    <p>Denny's busy scrubbing through corrupted stills with a knuckle in his lip. "Ugh... supposed to be near water they said? Or like something in this area. It hangs around here. Aren't you supposed to be the one with the fancy tracking skills?" He gives 'Moonman' a look, over to where he's still fretting his pale forehead under a head of hanging hair. "Yeah, yeah... I sense it somewhere around here. Just keep driving along the blocks... I'm starting to feel something."</p>
+
+    <div class="slash">/////</div>
+    <div class="moon"><span class="glyph"><b>|</b></span>The bell tolls, and you plead for judgement<span class="glyph"><b>|</b></span></div>
+
+    <p>Ten streets over something's rolling on the hood of a parked sedan, sucking the warm off it and feeling the breeze give it a little wobble. It's grey and a little see-through, faint light glows at the edges of its paws to the tips of its ears. Anything would be glowing, as easy a day as it is. It rolls over and does a belly-up wiggle, stretching content with a little ripple on its goopy edges from a low purr. The low motorless hum in it is a bit alien, like a fridge running in another room if it was satisfied. It flows upright, gooping up into a feline. Not long, and it pours itself jiggly onto the pavement with a spackle like spilled milk. It just sits there for a bit, before swooping up into a cat again and doing a big stretch. Time to go to the grocery store.</p>
+
+    <div class="slash">/////</div>
+
+    <p>"Met her doing laundry. Machine ate my money and I was just sitting there. Well, I was sitting there thinking I'm never living at a place without a washer and a dryer again. Who even carries coins these days? Like, c'mon." Denny gets a good scratch under his hair. "I already hit it five times or something before she came over. Just smacked it once and the load started up."</p>
+    <p>"You've already told that story like ten times!" The voice cuts in from up at the wheel, a bit girl and a bit gritty. The big fluff of her ponytail is just visible over the headrest, bouncing with the road. "Laundromat. She smacked it one time and it went. Yes, Denny, it's like a romance novel."</p>
+    <p>From back by the green screens: "Hey... but it's a good story."</p>
+    <p>"It was good until the fifth time I had to hear it." Julie takes a corner without slowing down, one hand on the wheel, the other crinkling a bag in her lap. She comes up with a fistful of something and crams it in her cheek.</p>
+    <p>Denny gives her a long look. "Why always so cranky, Julie?"</p>
+    <p>Julie, in turn: "You do the screens and stuff. Moonman, he does moon things. And I drive and suffer. It's division of labor." She stuffs more candy in her mouth, mumbling, "At least we get good dental."</p>
+    <p>She turns up her music.</p>
+    <p>'Moonie' now, groaning. "When do we get to pick the songs, Julie?"</p>
+    <p>"When you drive, idiot!"</p>
+    <p>"It's like the same eight songs."</p>
+    <p>"And they're good!"</p>
+    <p>"What was that about 'until the fifth time I heard it'?"</p>
+    <p>"I drive, I get to pick the music. It's like human default. You're still learning, Moonie. You just have to trust me." She smirks, smug—</p>
+    <p>A screen pings. Then three more. The dispatch box crackles up over the music. "—Eighth and Harbor, structural, possible anomalous, units respond—"</p>
+    <p>"Finally!" Julie's already cranking the wheel.</p>
+
+    <div class="slash">/////</div>
+    <div class="moon"><span class="glyph"><b>|</b></span>The light of love rests on your shoulders<span class="glyph"><b>|</b></span></div>
+
+    <p>A can of peaches flies up and busts out a light. A display tower of soda tosses over and foam bursts up to spray across the floor. Bags and cans clinking and crunching through aisles. And something goopy rolls along through it.</p>
+    <p>A stocker drops his price-gun and just runs, apron flapping. Somebody's cart is abandoned mid-aisle, a kid's juice still in the seat. A woman by the registers has both hands over her mouth, not moving, watching a thirty-pound bag of dog food slide past her ankles on its own.</p>
+    <p>It pours through dairy, on its way to the freezer. The door flies off its hinges and spins to a clatter on the floor with a sheet-glass crunch backup. A pyramid of canned soup collapses in on itself in an extremely loud tumble.</p>
+    <p>"GO go go—" somebody's herding a clump of people toward the front, a hand on a stranger's back, everybody ducking like the ceiling might be next. An old man won't leave his cart. A teenager's got her phone up filming it, walking backward, until she trips over the dog food and decides the floor's a fine place to keep filming from.</p>
+    <p>Something heavy hits the back wall from the inside.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>you choose to bleed and put it down<span class="glyph"><b>|</b></span></div>
+    <div class="slash">/////</div>
+
+    <p>"It's here. It's close." Cass has the claw at his forehead again, eyes shut. "I can feel it. Right around here somewhere. It's loud."</p>
+    <p>"You said that six blocks ago." Julie doesn't look back. "And the six blocks before that."</p>
+    <p>"It moves."</p>
+    <p>"Convenient."</p>
+    <p>"Shut up Julie."</p>
+    <p>"Nuh-uh."</p>
+    <p>"So it's loud now." Denny's halfway into a fresh bag of chips. "That's good, right? Loud's close."</p>
+    <p>"Loud's everywhere. That's the problem." Cass sighs. "It's like trying to point at a smell. It sucks ass."</p>
+    <p>"Sucks ass huh?" Julie chews. "Denny teach you that one?"</p>
+    <p>"Ugh... no... Director Yamamoto."</p>
+    <p>A monitor in the back flickers. Denny glances at it, chip halfway to his mouth... stopping before the crunch.</p>
+    <p>A corner of the building bursts out, coming apart in a soundless tumble of block and dust, and something pale pours out into the lot and stands up out of the rubble big and grey and stretching.</p>
+    <p>Denny's chip drops back into the bag. He looks at the screen. He looks up, out the windshield — half a block down, same store, same dust still drifting up off the lot.</p>
+    <p>"Uh." He points, kind of weakly, at the windshield. "Guys."</p>
+    <p>He swallows the chip he forgot was in his mouth.</p>
+    <p>"I think— I'm pretty sure that's it."</p>
+
+    <div class="slash">/////</div>
+
+    <p>SMASH—</p>
+    <p>The van's doing fifty through a thirty, Julie hunched over the wheel, both hands now. The cat's a block ahead and booking it — pouring between parked cars, over a hot dog stand, through it, the umbrella going up like a launched kite. It doesn't run so much as flow, low and fast and way too big, a grey wave with ears.</p>
+    <p>"Left! Left it went left—" Denny's got a hand braced on the ceiling, the other stabbing at the windshield.</p>
+    <p>"I SEE it!"</p>
+    <p>"Don't lose it—"</p>
+    <p>"I'm not gonna LOSE a building-sized cat, Denny—"</p>
+    <p>It takes a corner by not taking it, sloshing up the side of a brick wall and raining loose mortar. A mailbox goes spinning. A man on a bike bails into a hedge. The van clips a traffic cone and launches it into the next decade.</p>
+    <p>"It's getting bigger," Cass says, low, rack lights strobing. "It ate the store. It's getting—"</p>
+    <p>"I CAN SEE ITS BIGGER MOONIE!" Julie downshifts and the engine screams.</p>
+    <p>The cat leaps. Actually leaps — heaves its whole mass up over an intersection in one impossible jiggling arc, blotting out a streetlight, coming down on the far side with a wet whump that rocks parked cars on their springs. Trash cans bounce. A car alarm choir kicks off.</p>
+    <p>"Did you SEE that—" Denny's half laughing now, terrified, electrified. "Did you see it JUMP—"</p>
+    <p>"Shut up shut up shut up hold ON—"</p>
+    <p>It pours around the last corner and the street ahead just—</p>
+    <p>—stops being a street.</p>
+    <p>Lanterns. Bodies. A whole sea of them — paper lights strung in reds and golds over a crowd packed shoulder to shoulder, a festival mid-swing. Food smoke hanging low and sweet. A drum line somewhere. Stalls down both sides hung with charms and masks and fried things on sticks, kids up on shoulders, somebody's radio losing to somebody else's. The whole street lit warm and slow and full of people who have no idea.</p>
+    <p>Julie stands on the brake.</p>
+    <p>The van screams sideways, shudders, stops dead, everything not bolted down flying forward and rocking back.</p>
+    <p>A hand's width off the bumper, frozen mid-step, is a man in about nine feet of foam. Something aquatic. A great rounded fish-head sits over his own, mouth gaping in a permanent cheerful O, a chubby tail dragging the asphalt behind him. Little human legs in sandals poke out the bottom. One foam mitt's still raised mid-wave to some friend in the crowd he was walking toward.</p>
+    <p>He looks at the bumper. He looks up at the van. The fish keeps grinning. Slowly, he finishes the wave — at the van now.</p>
+    <p>Nobody breathes.</p>
+    <p>Then, half a block past him, over the heads of the crowd — a swell. People parting in a screaming wave, a ripple running through the lanterns, strings popping loose one by one. Something low and grey and enormous slides under the festival like a current under ice.</p>
+    <p>"It's going through the crowd!" Cass is already moving.</p>
+    <p>Julie's knuckles are white on the wheel. "We can't follow that. Not in this. Not in there. They'll see you. What are you even gonna do to that thing!? Order said we can't kill it!"</p>
+    <p>The door bangs open, festival noise flooding in — drums, frying oil, the first real scream finding its legs up ahead. Cass is half out, coat catching the lantern light. "I'll figure something out!"</p>
+
+    <div class="slash">/////</div>
+    <div class="moon"><span class="glyph"><b>|</b></span>Come now, come down, the night is wide<span class="glyph"><b>|</b></span></div>
+
+    <p>The festival swallows him.</p>
+    <p>Cass goes in after it on foot — or what passes for foot, blipping forward in stutters between the bodies, a stagger of displacement that pops every bulb he passes in a run behind him, ba-dap-dap-dap, like a xylophone falling down stairs. People grab at their kids. A woman shrieks. Somebody's beer goes up in the air.</p>
+    <p>Up ahead the cat's having the time of its life.</p>
+    <p>It pours under a charm stall and comes out the other side wearing a streamer like a scarf, knocking a rack of paper fans into the air — fans everywhere, snowing down over the crowd, the guy who was selling them watching with the face of a man recalculating his whole evening. The cat doesn't even slow. It's not running from anything. It's just going, delighted, the refrigerator hum loud and happy, and everything it touches comes apart behind it.</p>
+    <p>"Move, move, sorry, move PLEASE." Cass is losing ground. Too many bodies. He can't blip through what he can't see past.</p>
+    <p>So the cat notices him.</p>
+    <p>It stops dead mid-street. Swivels. And does the thing cats do — drops low, butt up, that little hunting shimmy, except it's four tons of it. The hum kicks up an octave, thrilled. New game.</p>
+    <p>"No," Cass says. "No, don't—"</p>
+    <p>It pounces.</p>
+    <p>He blips sideways and four tons of happy goop flattens the spot he was standing on, taking a noodle cart with it, broth going up in a wave. A vendor wails the wail of a man whose noodle career is over. The crowd, packed too tight to run far, has decided this is the show. Some of them are clapping. A kid laughs maniacally.</p>
+    <p>The cat wheels around, thrilled the toy moved, and bats at him — an actual paw-swipe, playful, the size of a couch. He ducks it. The paw takes out a dumpling stand instead. It chirps at him; that little prr-up sound a housecat makes at a bird through glass, except it's big. Very big. The kind of sound you feel in your sternum.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>and you were never meant to bear it<span class="glyph"><b>|</b></span></div>
+
+    <p>He scrambles up onto a drum riser to get above the crowd and the cat follows the toy up, rearing, paws on the boards, and the whole riser tips. Cass rides it down and blips off the end a half-second before it splinters. A taiko drum rolls free into the crowd, everyone parting around it.</p>
+    <p>"Okay okay, you want to play..." He grabs a fallen festival pole strung with lanterns and swings it, and the cat's whole head tracks the bobbing lights, pupils blowing wide, hindquarters going. "Yeah? Yeah? Go get it—"</p>
+    <p>He flings the pole down the street and the cat goes, a grey flood tearing after a string of paper lanterns, and for one beautiful second it's working, it's leaving, he's bought himself—</p>
+    <p>Then it gets bored of the pole.</p>
+    <p>And it goes up.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>Lay the weight where the water lies<span class="glyph"><b>|</b></span></div>
+
+    <p>The goop draws itself long. Long and longer, pouring upward off the pavement into the air, sprouting a ripple of fins, a mane of light, and it snakes — a great translucent dragon unspooling over the stalls, looping in long slow figures above the lanterns, glowing gold from the festival lights shining up through it. Below it, the actual costumed dragon-dancers stop dead, their painted silk dragon sagging in their hands, every one of them looking up at the enormous see-through cousin doing lazy backflips over the rooftops.</p>
+    <p>Then the dragon stops.</p>
+    <p>High up, mid-loop, it just — stops. Hangs there. The hum cuts out. The playfulness draining out of it all at once, and the great translucent head swivels, slow, down toward the quiet edge of the festival where the lanterns thin out and the crowd falls away. Down toward a woman who's wandered out near the stone walkway by the river, alone, looking at something he can't see.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>Rest beneath the light, and let me share it<span class="glyph"><b>|</b></span></div>
+
+    <p>The dragon makes a sound he hasn't heard it make.</p>
+    <p>Not the hum. Not the chirp. Every glowing line of it snaps taut and recoils, hackles of light standing up all wrong along its spine.</p>
+    <p>Then it dives at her. It comes down out of the sky like a striking blade, straight for the woman's back</p>
+
+    <div class="slash">/////</div>
+
+    <p>A wet sound. Goop meets coat meets the body under it.</p>
+    <p>He's there now. In the way. Both arms up, holding it off, the strike folded around him instead of her.</p>
+    <p>His arms shake with it. There's something on his chin. On his teeth. It catches the light, white and faintly glowing, running from the corner of his mouth.</p>
+    <p>Behind him, soft, the woman is already going. Quick light steps fading off down the walkway.</p>
+    <p>The shape shoves against him once more, then flinches. Coils up and back, away from him, and the whole mass loses its hold on the air. It drops. Comes down in a heavy slop of goop on the stone, a pile, no shape to it at all.</p>
+    <p>A cat hops out of the pile. Small now. Normal. It shakes itself off and bolts after her.</p>
+
+    <div class="slash">/////</div>
+    <div class="moon"><span class="glyph"><b>|</b></span>Tired little one, good little one<span class="glyph"><b>|</b></span></div>
+
+    <p>The festival noise falls off behind him like a door pulled shut.</p>
+    <p>Cass comes up the alley slow, one hand pressed to his side. The lanterns thin and then quit. The brick opens out ahead of him toward the water and the crowd is gone, the sound is gone, until there's nothing left but the river breathing in the dark.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>slip softly through the dark<span class="glyph"><b>|</b></span></div>
+
+    <p>The cat is there. Stopped. Low to the stone a few yards on, and it isn't playing now. Drawn up and back, spine high, the grey of it gone bloodless and shaking. It has made itself small. It is afraid of something out past the edge.</p>
+    <p>He follows the look.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>Will you come down, please come soon<span class="glyph"><b>|</b></span></div>
+
+    <p>The woman stands at the lip of the walkway with her back to him, and beyond her the river is laid out wide and black and still, and the moon is on it. Low. A gibbous moon a night or two short of full, sitting so close to the water it seems to lean against it, and from the far dark it spills one long road of white straight across the river to the stone at her feet. The current softly laps that road of light, breaking it into coins and joining it back up. There is no far shore or sky, only the black water, and the white of the moon hung over it, the bright road run into the pitch.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>I will leave the door unbarred<span class="glyph"><b>|</b></span></div>
+
+    <p>The dress is red, cut open across the shoulders, and the moon lays itself over her bare back. Her shoulder blades stand up sharp under the skin, two pale wings folded flat, lifting a little as she breathes and settles again.</p>
+    <p>"Hey." His voice falls short, swallowed before it gets to her. "Hey... Come back from the edge."</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>You are mine. You have always been mine.<span class="glyph"><b>|</b></span></div>
+
+    <p>She turns, the way the tide turns. The whole of her comes round at once, smooth and slow, and she is already changing as she does.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>Who is this that stood in my light?<span class="glyph"><b>|</b></span></div>
+
+    <p>She rises. Stretches up off the stone, taller, taller.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>I will have what is mine, do you hear me,<span class="glyph"><b>|</b></span></div>
+
+    <p>The red of her dress pools at her feet.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>I will have it tonight, tonight.<span class="glyph"><b>|</b></span></div>
+
+    <p>Her hair lets down and keeps letting down, white, far more than a skull could carry, falling past her waist and floating at the ends on a current of night.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>Run, then. Run on your little legs.<span class="glyph"><b>|</b></span></div>
+
+    <p>Her arms reach.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>The time is down. The time is now<span class="glyph"><b>|</b></span></div>
+
+    <p>Then there are more of them, unfolding from her sides without hurry, two, four, more than that, thin and white and long-fingered, blooming.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>The bell tolls, and you plead for judgement<span class="glyph"><b>|</b></span></div>
+
+    <p>And the eyes. Hers go pale, then catch fire cold.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>The light of love rests on your shoulders<span class="glyph"><b>|</b></span></div>
+
+    <p>Above them a second pair opens.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>you choose to bleed and put it down<span class="glyph"><b>|</b></span></div>
+
+    <p>Then a third.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>There is no door I have not barred.<span class="glyph"><b>|</b></span></div>
+
+    <p>Six now, climbing the height of her face in pairs.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>The water remembers. The dark does not forget.<span class="glyph"><b>|</b></span></div>
+
+    <p>Every one settled on him.</p>
+
+    <div class="moon"><span class="glyph"><b>|</b></span>And I am patient. And I am scarred.<span class="glyph"><b>|</b></span></div>
+
+    <p>Every one burning the same dead white as the moon on the water.</p>
+
+    <div class="moonblock">
+      <span class="glyph"><b>|</b></span> I will open her throat to the white of the bone. | | I will reach through her ribs and make them mine. | | The red comes up and the red runs down | | To mix with salt and make my brine | | It's never too late to suffer | | but her smile I'll keep. I'll see to that | | Over and over again | | until you learn. <span class="glyph"><b>|</b></span>
+    </div>
+
+    <div class="slash">/////</div>
+
+    <p>The cat presses its head to her leg.</p>
+    <p>Just a little head-bump, the side of its face against her calf, a slow affectionate rub the way a housecat marks what's its.</p>
+    <p>The light goes out of her all at once.</p>
+    <p>The six eyes drop dark. The arms fall. The white hair loses the current and just hangs. For a half-second she's only a woman again, swaying, confused, a red dress at the edge of the water—</p>
+    <p>Then she comes apart.</p>
+    <p>It is not slow. The thing that was wearing her tears its way back out and takes her with it, and what's left goes across the stone in a long red reach. An arm by the railing, palm open. The red dress, mostly, gone dark and soaked, crumpled where the rest of her stops. A wide smear leading off the edge of the walkway into the black water, already thinning, already taken by the current. Further on, near the lip of the river, the last of it. Pale. Still.</p>
+    <p>The drums are still going somewhere behind all of it. A vendor still frying something. The river moving, and the moon laid out flat and white and patient across the water.</p>
+
+    <div class="slash">/////</div>
+
+    <p>The cat trots over.</p>
+    <p>It winds once around Cass's ankles, hops up, and he catches it against his chest without looking, the way you catch a thing you've caught a hundred times. It headbutts his chin. The refrigerator hum starts back up, content, like none of it happened. Maybe to the cat none of it did.</p>
+    <p>He stands a second in the quiet. Holds the cat in one arm. Scratches it between the ears with two clawed fingers, slow, and it leans into the scratch.</p>
+    <p>Then he reaches up and presses two fingers to the side of his head, opening the channel.</p>
+    <p>"...It's me." His voice is low. Careful. "I have the entity. It's contained, it's calm, it's—" He stops. Looks at the woman. "It's fine. It's fine now."</p>
+    <p>The channel comes back bright and crackling, Denny and Julie both lit up, talking over each other.</p>
+
+    <div class="slash">/////</div>
+
+    <div class="moonblock">
+      <span class="glyph"><b>|</b></span> I'll be with you and with your spirit<br>
+      Lift up your heart, and cry for the light<br>
+      hold hands in pale silver and peace consume you<br>
+      blind to all your flaws and mistakes<br>
+      Await, allow, accept, attend<br>
+      be grateful, for you deserve much less<br>
+      Than the gentle arms of the moon <span class="glyph"><b>|</b></span>
+    </div>
+
+    <div class="slash">/////</div>
+
+    <div class="addendum">
+      <div class="ad-title">Addendum — Subject AMEEBA (formerly AMOEBA)</div>
+      <div class="ad-sub">Filed following river district incident.</div>
+      <p>Subject recovered and contained following the events of <span class="redact">redacted</span>. Capture was effected only after the subject ceased independent movement; field accounts indicate it was retrieved calmly and without resistance, in its default form, by Entity Agent 009. Property damage across the pursuit is itemized separately and is extensive (grocery, festival grounds, multiple vehicles, est. <span class="redact">redacted</span>). EM interference along the route compromised an unknown quantity of civilian and Authority recording; several feeds are unrecoverable. Containment of public witness account is ongoing and is not expected to fully succeed.</p>
+      <p class="reclass">Reclassification: the subject is selenic.</p>
+      <p>Analysis of the river incident confirms the subject's contact with an active SA-001 linkage suppressed and terminated the effect. Where the subject was present, the linkage could not hold. This is the first catalogued instance of any entity neutralizing the influence of SA-001. The fatality recorded at the scene is attributed to SA-001, not to the subject; available evidence indicates the subject acted to prevent it.</p>
+      <p>Prior threat assessment is void. The subject is to be retained, studied, and protected as a matter of the highest branch priority. Use of force resulting in its death remains, now for separate and considerable reasons, unauthorized.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    Anomalous Control Authority · Selenic Containment Branch<br>
+    End of collected record · SA-001 cluster
+  </footer>
+
+</div>
+</body>
+</html>
